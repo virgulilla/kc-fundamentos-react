@@ -144,7 +144,7 @@ npm start
 ### Clonar frontend (React Dashboard)
 
 ```bash
-git clone https://github.com/virgulilla/kc-nodepop-react.git
+git clone https://github.com/virgulilla/kc-fundamentos-react.git
 cd kc-nodepop-react
 npm install
 npm run dev
