@@ -11,6 +11,7 @@ import NewAdvertPage from "./pages/advert/new-advert-page";
 import AdvertsPage from "./pages/advert/adverts-page";
 import NotFoundPage from "./pages/advert/not-found-page";
 import AdvertPage from "./pages/advert/advert-page";
+import Layout from "./components/layout/layout";
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { isLogged } = useAuth();
@@ -21,35 +22,45 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/login" element={<Layout />}>
+          <Route index element={<LoginPage />} />
+        </Route>
+        <Route path="/register" element={<Layout />}>
+          <Route index element={<RegisterPage />} />
+        </Route>
 
         <Route path="/" element={<Navigate to="/adverts" replace />} />
-        <Route
-          path="/adverts"
-          element={
-            <PrivateRoute>
-              <AdvertsPage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/adverts/new"
-          element={
-            <PrivateRoute>
-              <NewAdvertPage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/adverts/:id"
-          element={
-            <PrivateRoute>
-              <AdvertPage />
-            </PrivateRoute>
-          }
-        />
-        <Route path="*" element={<NotFoundPage />} />
+        <Route path="/adverts" element={<Layout />}>
+          <Route
+            index
+            element={
+              <PrivateRoute>
+                <AdvertsPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/adverts/new"
+            element={
+              <PrivateRoute>
+                <NewAdvertPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/adverts/:id"
+            element={
+              <PrivateRoute>
+                <AdvertPage />
+              </PrivateRoute>
+            }
+          />
+        </Route>
+
+        <Route path="/not-found" element={<Layout />}>
+          <Route index element={<NotFoundPage />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/not-found" />} />
       </Routes>
     </Router>
   );

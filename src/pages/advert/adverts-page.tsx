@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { getAdverts, getTags } from "./service";
 import type { Advert, Tag } from "./types";
-import Layout from "../../components/layout/layout";
 import { Link } from "react-router-dom";
 import Icon from "../../components/icon";
+import Page from "../../components/layout/page";
 
 export default function AdvertsPage() {
   const [allAdverts, setAllAdverts] = useState<Advert[]>([]);
@@ -13,8 +13,7 @@ export default function AdvertsPage() {
   const [filters, setFilters] = useState({
     name: "",
     sale: "all",
-    price: "",
-    maxPrice: "",
+    priceRange: [0, 10000],
     selectedTags: [] as string[],
   });
 
@@ -37,7 +36,7 @@ export default function AdvertsPage() {
         filters.sale === "all" ? true : ad.sale === (filters.sale === "true");
 
       const matchesPrice =
-        !filters.price || ad.price >= parseFloat(filters.price);
+        ad.price >= filters.priceRange[0] && ad.price <= filters.priceRange[1];
 
       const matchesTags = filters.selectedTags.every((tag) =>
         tagsInclude(ad.tags, tag),
@@ -62,7 +61,7 @@ export default function AdvertsPage() {
   };
 
   return (
-    <Layout title="Listado de anuncios">
+    <Page title="">
       <div className="space-y-8 bg-white/[0.03] p-8">
         {/* Filtros */}
         <div className="dark:bg-dark-background space-y-6 rounded bg-white p-6 shadow-sm">
@@ -83,24 +82,42 @@ export default function AdvertsPage() {
               <option value="true">Venta</option>
               <option value="false">Compra</option>
             </select>
-            <input
-              type="number"
-              placeholder="Precio mínimo"
-              className="border-border dark:border-dark-border text-text dark:text-dark-text dark:bg-dark-background focus:ring-primary dark:focus:ring-dark-primary rounded border bg-white px-3 py-2 focus:ring-1 focus:outline-none"
-              value={filters.price}
-              onChange={(e) =>
-                setFilters({ ...filters, price: e.target.value })
-              }
-            />
-            <input
-              type="number"
-              placeholder="Precio máximo"
-              className="border-border dark:border-dark-border text-text dark:text-dark-text dark:bg-dark-background focus:ring-primary dark:focus:ring-dark-primary rounded border bg-white px-3 py-2 focus:ring-1 focus:outline-none"
-              value={filters.maxPrice}
-              onChange={(e) =>
-                setFilters({ ...filters, maxPrice: e.target.value })
-              }
-            />
+            <div className="flex flex-col gap-4 md:col-span-2">
+              <label className="text-text dark:text-dark-text text-sm font-medium">
+                Rango de precio: {filters.priceRange[0]}€ -{" "}
+                {filters.priceRange[1]}€
+              </label>
+              <div className="flex flex-col gap-2">
+                <input
+                  type="range"
+                  min="0"
+                  max="10000"
+                  step="50"
+                  value={filters.priceRange[0]}
+                  onChange={(e) =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      priceRange: [Number(e.target.value), prev.priceRange[1]],
+                    }))
+                  }
+                  className="accent-primary w-full"
+                />
+                <input
+                  type="range"
+                  min="0"
+                  max="10000"
+                  step="50"
+                  value={filters.priceRange[1]}
+                  onChange={(e) =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      priceRange: [prev.priceRange[0], Number(e.target.value)],
+                    }))
+                  }
+                  className="accent-primary w-full"
+                />
+              </div>
+            </div>
           </div>
 
           <fieldset>
@@ -187,6 +204,6 @@ export default function AdvertsPage() {
           </table>
         </div>
       </div>
-    </Layout>
+    </Page>
   );
 }

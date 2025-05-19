@@ -2,7 +2,7 @@ import type { FormEvent } from "react";
 import { useState } from "react";
 import { register } from "./service";
 import { Button } from "../../components/Button";
-import Layout from "../../components/layout/layout";
+import Page from "../../components/layout/page";
 
 export default function RegisterPage() {
   const [error, setError] = useState<string | null>(null);
@@ -36,7 +36,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <Layout title="Crear cuenta">
+    <Page title="">
       <div className="bg-background flex min-h-screen items-center justify-center">
         <form
           onSubmit={handleSubmit}
@@ -137,6 +137,6 @@ export default function RegisterPage() {
           </div>
         </form>
       </div>
-    </Layout>
+    </Page>
   );
 }

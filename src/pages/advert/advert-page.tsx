@@ -1,10 +1,10 @@
 import { useParams, useNavigate, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import Layout from "../../components/layout/layout";
 import { getAdvert, deleteAdvert } from "./service";
 import { Button } from "../../components/Button";
 import { ConfirmModal } from "../../components/ConfirmModal";
 import { type Advert } from "./types";
+import Page from "../../components/layout/page";
 
 export default function AdvertPage() {
   const { id } = useParams<{ id: string }>();
@@ -43,11 +43,11 @@ export default function AdvertPage() {
 
   if (loading) {
     return (
-      <Layout title="Cargando...">
+      <Page title="">
         <div className="text-text flex h-full items-center justify-center dark:text-white">
           Cargando anuncio...
         </div>
-      </Layout>
+      </Page>
     );
   }
 
@@ -56,7 +56,7 @@ export default function AdvertPage() {
   }
 
   return (
-    <Layout title={advert.name}>
+    <Page title="">
       <div className="mx-auto w-full max-w-4xl px-4 py-6 sm:px-8 sm:py-10">
         <div className="flex w-full flex-col items-center gap-6 rounded-lg bg-white p-4 shadow-lg sm:p-8 md:flex-row dark:bg-white/[0.03] dark:text-white">
           {advert.photo && (
@@ -134,6 +134,6 @@ export default function AdvertPage() {
           onCancel={() => setIsConfirmOpen(false)}
         />
       )}
-    </Layout>
+    </Page>
   );
 }

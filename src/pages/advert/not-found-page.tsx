@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import Layout from "../../components/layout/layout";
 import { Button } from "../../components/Button";
 import { useAuth } from "../auth/context";
+import Page from "../../components/layout/page";
 
 export default function NotFoundPage() {
   const navigate = useNavigate();
@@ -12,7 +12,7 @@ export default function NotFoundPage() {
   };
 
   return (
-    <Layout title="">
+    <Page title="">
       <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
         <h1 className="text-text mb-4 text-5xl font-bold dark:text-white">
           404
@@ -27,6 +27,6 @@ export default function NotFoundPage() {
           classes="rounded bg-primary dark:bg-dark-primary px-6 py-2 text-white hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50"
         />
       </div>
-    </Layout>
+    </Page>
   );
 }

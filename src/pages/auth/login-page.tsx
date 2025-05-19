@@ -3,7 +3,7 @@ import { login } from "./service";
 import { Button } from "../../components/Button";
 import { useAuth } from "./context";
 import { useNavigate } from "react-router-dom";
-import Layout from "../../components/layout/layout";
+import Page from "../../components/layout/page";
 
 export default function LoginPage() {
   const { onLogin } = useAuth();
@@ -35,7 +35,7 @@ export default function LoginPage() {
   };
 
   return (
-    <Layout title="Iniciar sesión">
+    <Page title="">
       <div className="bg-background flex min-h-screen items-center justify-center">
         <form
           onSubmit={handleSubmit}
@@ -111,6 +111,6 @@ export default function LoginPage() {
           </div>
         </form>
       </div>
-    </Layout>
+    </Page>
   );
 }

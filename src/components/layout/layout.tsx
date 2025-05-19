@@ -1,15 +1,10 @@
-import type { ReactNode } from "react";
 import Header from "./header";
 import Footer from "./footer";
 import Sidebar from "./Sidebar";
 import { useAuth } from "../../pages/auth/context";
+import { Outlet } from "react-router-dom";
 
-interface LayoutProps {
-  readonly title: string;
-  readonly children: ReactNode;
-}
-
-export default function Layout({ title, children }: LayoutProps) {
+export default function Layout() {
   const { isLogged } = useAuth();
 
   return (
@@ -21,11 +16,8 @@ export default function Layout({ title, children }: LayoutProps) {
 
         <main className="flex-grow overflow-y-auto px-4 py-6 sm:px-6 sm:py-8">
           <div className="mx-auto w-full max-w-screen-xl">
-            <h1 className="mb-4 text-2xl font-semibold sm:text-3xl dark:text-white">
-              {title}
-            </h1>
             <section className="dark:bg-dark-background w-full overflow-x-auto rounded bg-white p-4 shadow-sm sm:p-6">
-              {children}
+              <Outlet />
             </section>
           </div>
         </main>
