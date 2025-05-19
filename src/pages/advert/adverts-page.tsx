@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { getAdverts, getTags } from "./service";
 import type { Advert, Tag } from "./types";
-import { Link } from "react-router-dom";
-import Icon from "../../components/icon";
 import Page from "../../components/layout/page";
+import { AdvertItem } from "../../components/AdvertItem";
+import { AdvertTableItem } from "../../components/AdvertTableItem";
 
 export default function AdvertsPage() {
   const [allAdverts, setAllAdverts] = useState<Advert[]>([]);
@@ -148,19 +148,11 @@ export default function AdvertsPage() {
           <table className="border-border dark:border-dark-border dark:bg-dark-background min-w-full border bg-white shadow-md">
             <thead className="bg-background dark:dark:bg-gray-900">
               <tr className="text-text dark:text-gray-400">
-                <th className="border-border dark:border-dark-border border px-4 py-2">
-                  Nombre
-                </th>
-                <th className="border-border dark:border-dark-border border px-4 py-2">
-                  Tipo
-                </th>
-                <th className="border-border dark:border-dark-border border px-4 py-2">
-                  Precio
-                </th>
-                <th className="border-border dark:border-dark-border border px-4 py-2">
-                  Tags
-                </th>
-                <th className="border-border dark:border-dark-border border px-4 py-2" />
+                <AdvertTableItem name="Nombre" />
+                <AdvertTableItem name="Tipo" />
+                <AdvertTableItem name="Precio" />
+                <AdvertTableItem name="Tags" />
+                <AdvertTableItem name="" />
               </tr>
             </thead>
             <tbody className="dark:bg-white/[0.03]">
@@ -174,31 +166,7 @@ export default function AdvertsPage() {
                   </td>
                 </tr>
               ) : (
-                filteredAdverts.map((ad) => (
-                  <tr
-                    key={ad.id}
-                    className="border-border dark:border-dark-border text-text dark:text-dark-text border-t text-center"
-                  >
-                    <td className="px-4 py-2">{ad.name}</td>
-                    <td className="px-4 py-2">
-                      {ad.sale ? "Venta" : "Compra"}
-                    </td>
-                    <td className="px-4 py-2">{ad.price} €</td>
-                    <td className="px-4 py-2">{ad.tags.join(", ")}</td>
-                    <td>
-                      <Link
-                        to={`/adverts/${ad.id}`}
-                        title="Ver anuncio"
-                        className="inline-flex"
-                      >
-                        <Icon
-                          name="eye"
-                          className="text-primary hover:text-primary/70 dark:text-dark-primary dark:hover:text-dark-primary/70"
-                        />
-                      </Link>
-                    </td>
-                  </tr>
-                ))
+                filteredAdverts.map((ad) => <AdvertItem key={ad.id} ad={ad} />)
               )}
             </tbody>
           </table>
