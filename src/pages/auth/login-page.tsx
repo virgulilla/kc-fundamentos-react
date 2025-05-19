@@ -10,6 +10,7 @@ export default function LoginPage() {
   const location = useLocation();
   const { onLogin } = useAuth();
   const navigate = useNavigate();
+  const [isFetching, setIsFetching] = useState(false);
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
@@ -17,7 +18,7 @@ export default function LoginPage() {
   });
   const [error, setError] = useState<{ message: string } | null>(null);
   const { email, password, remember } = credentials;
-  const disabled = !email || !password;
+  const disabled = !email || !password || isFetching;
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
     setCredentials((prevCredentials) => ({
@@ -29,6 +30,7 @@ export default function LoginPage() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
+      setIsFetching(true);
       await login({ email, password, remember });
       onLogin();
       const to = location.state?.from ?? "/";
@@ -38,6 +40,8 @@ export default function LoginPage() {
         setError({ message: error.response?.data.message });
       }
       console.error(error);
+    } finally {
+      setIsFetching(false);
     }
   };
 
