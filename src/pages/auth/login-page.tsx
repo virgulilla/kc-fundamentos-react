@@ -4,6 +4,7 @@ import { Button } from "../../components/Button";
 import { useAuth } from "./context";
 import { useLocation, useNavigate } from "react-router-dom";
 import Page from "../../components/layout/page";
+import { AxiosError } from "axios";
 
 export default function LoginPage() {
   const location = useLocation();
@@ -14,6 +15,7 @@ export default function LoginPage() {
     password: "",
     remember: false,
   });
+  const [error, setError] = useState<{ message: string } | null>(null);
   const { email, password, remember } = credentials;
   const disabled = !email || !password;
 
@@ -32,6 +34,9 @@ export default function LoginPage() {
       const to = location.state?.from ?? "/";
       navigate(to, { replace: true });
     } catch (error) {
+      if (error instanceof AxiosError) {
+        setError({ message: error.response?.data.message });
+      }
       console.error(error);
     }
   };
@@ -46,6 +51,16 @@ export default function LoginPage() {
           <h2 className="text-text text-center text-2xl font-semibold">
             Iniciar sesión
           </h2>
+
+          {error && (
+            <div
+              className="rounded border border-red-200 bg-red-50 px-3 py-2 text-center text-sm text-red-600"
+              role="alert"
+              onClick={() => setError(null)}
+            >
+              {error.message}
+            </div>
+          )}
 
           <div>
             <label
