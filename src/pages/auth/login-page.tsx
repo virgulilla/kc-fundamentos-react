@@ -2,10 +2,11 @@ import { useState, type FormEvent, type ChangeEvent } from "react";
 import { login } from "./service";
 import { Button } from "../../components/Button";
 import { useAuth } from "./context";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Page from "../../components/layout/page";
 
 export default function LoginPage() {
+  const location = useLocation();
   const { onLogin } = useAuth();
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
@@ -28,7 +29,8 @@ export default function LoginPage() {
     try {
       await login({ email, password, remember });
       onLogin();
-      navigate("/adverts", { replace: true });
+      const to = location.state?.from ?? "/";
+      navigate(to, { replace: true });
     } catch (error) {
       console.error(error);
     }

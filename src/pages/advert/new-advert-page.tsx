@@ -3,7 +3,7 @@ import type { FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { newAdvert } from "./service";
 import { Button } from "../../components/Button";
-import Layout from "../../components/layout/layout";
+import Page from "../../components/layout/page";
 
 export default function NewAdvertPage() {
   const navigate = useNavigate();
@@ -56,7 +56,7 @@ export default function NewAdvertPage() {
   };
 
   return (
-    <Layout title="Crear anuncio">
+    <Page title="Crear anuncio">
       <div className="px-6 py-8">
         <form
           onSubmit={handleSubmit}
@@ -209,6 +209,6 @@ export default function NewAdvertPage() {
           </div>
         </form>
       </div>
-    </Layout>
+    </Page>
   );
 }

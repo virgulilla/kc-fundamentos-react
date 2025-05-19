@@ -3,6 +3,7 @@ import {
   Routes,
   Route,
   Navigate,
+  useLocation,
 } from "react-router-dom";
 import { useAuth } from "./pages/auth/context";
 import LoginPage from "./pages/auth/login-page";
@@ -12,10 +13,20 @@ import AdvertsPage from "./pages/advert/adverts-page";
 import NotFoundPage from "./pages/advert/not-found-page";
 import AdvertPage from "./pages/advert/advert-page";
 import Layout from "./components/layout/layout";
+import type { ReactNode } from "react";
 
-const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
+interface PrivateRouteProps {
+  children: ReactNode;
+}
+
+const PrivateRoute = ({ children }: PrivateRouteProps) => {
   const { isLogged } = useAuth();
-  return isLogged ? children : <Navigate to="/login" replace />;
+  const location = useLocation();
+  return isLogged ? (
+    children
+  ) : (
+    <Navigate to="/login" replace state={{ from: location.pathname }} />
+  );
 };
 
 function App() {
@@ -40,7 +51,7 @@ function App() {
             }
           />
           <Route
-            path="/adverts/new"
+            path="new"
             element={
               <PrivateRoute>
                 <NewAdvertPage />
@@ -48,7 +59,7 @@ function App() {
             }
           />
           <Route
-            path="/adverts/:id"
+            path=":id"
             element={
               <PrivateRoute>
                 <AdvertPage />
