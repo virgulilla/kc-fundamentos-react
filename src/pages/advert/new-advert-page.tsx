@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { newAdvert } from "./service";
@@ -8,6 +8,7 @@ import Page from "../../components/layout/page";
 export default function NewAdvertPage() {
   const navigate = useNavigate();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
   const [formState, setFormState] = useState({
     name: "",
     price: "",
@@ -34,8 +35,6 @@ export default function NewAdvertPage() {
     event.preventDefault();
 
     try {
-      const formData = new FormData(event.target as HTMLFormElement);
-
       const data = new FormData();
       data.append("name", formState.name);
       data.append("sale", formState.sale);
@@ -43,7 +42,7 @@ export default function NewAdvertPage() {
 
       formState.tags.forEach((tag) => data.append("tags", tag));
 
-      const file = formData.get("photo") as File;
+      const file = fileRef.current?.files?.[0];
       if (file && file.size > 0) {
         data.append("photo", file);
       }
@@ -188,8 +187,9 @@ export default function NewAdvertPage() {
               type="file"
               accept="image/*"
               className="hidden"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
+              ref={fileRef}
+              onChange={() => {
+                const file = fileRef.current?.files?.[0];
                 if (file) {
                   setPreviewUrl(URL.createObjectURL(file));
                 } else {

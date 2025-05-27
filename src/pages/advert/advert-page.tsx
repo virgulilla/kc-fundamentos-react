@@ -5,6 +5,7 @@ import { Button } from "../../components/Button";
 import { ConfirmModal } from "../../components/ConfirmModal";
 import { type Advert } from "./types";
 import Page from "../../components/layout/page";
+import { AxiosError } from "axios";
 
 export default function AdvertPage() {
   const { id } = useParams<{ id: string }>();
@@ -21,7 +22,11 @@ export default function AdvertPage() {
         const data = await getAdvert(id);
         setAdvert(data);
       } catch (err) {
-        console.error(err);
+        if (err instanceof AxiosError) {
+          if (err.status === 404) {
+            navigate("/not-found", { replace: true });
+          }
+        }
         setAdvert(null);
       } finally {
         setLoading(false);
@@ -29,7 +34,7 @@ export default function AdvertPage() {
     };
 
     fetchAdvert();
-  }, [id]);
+  }, [id, navigate]);
 
   const handleDelete = async () => {
     if (!id) return;

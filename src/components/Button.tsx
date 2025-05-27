@@ -12,6 +12,7 @@ export const Button = ({
   type,
   disabled,
   onClick,
+  ...props
 }: ButtonProps) => {
   return (
     <button
@@ -19,6 +20,7 @@ export const Button = ({
       className={classes}
       disabled={disabled}
       onClick={onClick}
+      {...props}
     >
       {text}
     </button>
