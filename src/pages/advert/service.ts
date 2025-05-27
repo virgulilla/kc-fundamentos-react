@@ -1,11 +1,13 @@
 import { client } from "../../api/client";
 
 export const newAdvert = async (formData: FormData) => {
-  await client.post("/api/v1/adverts", formData, {
+  const response = await client.post("/api/v1/adverts", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
   });
+
+  return response.data;
 };
 
 export const getAdverts = async () => {

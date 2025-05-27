@@ -47,8 +47,8 @@ export default function NewAdvertPage() {
         data.append("photo", file);
       }
 
-      await newAdvert(data);
-      navigate("/adverts", { replace: true });
+      const {id} = await newAdvert(data);
+      navigate(`/adverts/${id}`, { replace: true });
     } catch (error) {
       console.error(error);
     }
