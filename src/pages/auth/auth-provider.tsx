@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useState, useMemo, type ReactNode } from "react";
 import { AuthContext } from "./context";
 
 interface AuthProviderProps {
@@ -16,7 +16,14 @@ function AuthProvider({ defaultIsLogged, children }: AuthProviderProps) {
     setIsLogged(false);
   }
 
-  const authValue = { isLogged, onLogin: handleLogin, onLogout: handleLogout };
+  const authValue = useMemo(
+    () => ({
+      isLogged,
+      onLogin: handleLogin,
+      onLogout: handleLogout,
+    }),
+    [isLogged],
+  );
 
   return (
     <AuthContext.Provider value={authValue}>{children}</AuthContext.Provider>
