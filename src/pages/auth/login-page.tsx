@@ -37,7 +37,9 @@ export default function LoginPage() {
       navigate(to, { replace: true });
     } catch (error) {
       if (error instanceof AxiosError) {
-        setError({ message: error.response?.data.message });
+        setError({
+          message: error.response?.data.message ?? error.message ?? "",
+        });
       }
       console.error(error);
     } finally {

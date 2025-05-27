@@ -13,8 +13,7 @@ export const removeAuthorizationHeader = () => {
 };
 
 client.interceptors.request.use((config) => {
-  const token =
-    localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+  const token = localStorage.getItem("authToken");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
