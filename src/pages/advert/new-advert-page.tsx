@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { newAdvert } from "./service";
 import { Button } from "../../components/Button";
 import Page from "../../components/layout/page";
+import { AxiosError } from "axios";
 
 export default function NewAdvertPage() {
   const navigate = useNavigate();
@@ -47,9 +48,14 @@ export default function NewAdvertPage() {
         data.append("photo", file);
       }
 
-      const {id} = await newAdvert(data);
+      const { id } = await newAdvert(data);
       navigate(`/adverts/${id}`, { replace: true });
     } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.status === 401) {
+          navigate("/login", { replace: true });
+        }
+      }
       console.error(error);
     }
   };
