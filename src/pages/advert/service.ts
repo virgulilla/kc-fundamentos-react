@@ -1,4 +1,5 @@
 import { client } from "../../api/client";
+import { AdvertsSchema } from "./types";
 
 export const newAdvert = async (formData: FormData) => {
   const response = await client.post("/api/v1/adverts", formData, {
@@ -11,9 +12,9 @@ export const newAdvert = async (formData: FormData) => {
 };
 
 export const getAdverts = async () => {
-  const response = await client.get("/api/v1/adverts");
+  const response = await client.get<unknown>("/api/v1/adverts");
 
-  return response.data;
+  return AdvertsSchema.parse(response.data);
 };
 
 export const getAdvert = async (id: string) => {

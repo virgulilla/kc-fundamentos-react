@@ -4,11 +4,13 @@ import type { Advert, Tag } from "./types";
 import Page from "../../components/layout/page";
 import { AdvertItem } from "../../components/AdvertItem";
 import { AdvertTableItem } from "../../components/AdvertTableItem";
+import { ZodError } from "zod";
 
 export default function AdvertsPage() {
   const [allAdverts, setAllAdverts] = useState<Advert[]>([]);
   const [filteredAdverts, setFilteredAdverts] = useState<Advert[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   const [filters, setFilters] = useState({
     name: "",
@@ -18,10 +20,22 @@ export default function AdvertsPage() {
   });
 
   useEffect(() => {
-    getAdverts().then((data) => {
-      setAllAdverts(data);
-      setFilteredAdverts(data);
-    });
+    getAdverts()
+      .then((data) => {
+        setAllAdverts(data);
+        setFilteredAdverts(data);
+      })
+      .catch((error: unknown) => {
+        if (error instanceof ZodError) {
+          const formattedErrors = error.errors.map(
+            (e) => `${e.path.join(".")} - ${e.message}`,
+          );
+          console.error("Errores de validación Zod:", formattedErrors);
+          setError(formattedErrors.join(", "));
+        } else {
+          console.error("Error inesperado:", error);
+        }
+      });
 
     getTags().then(setTags);
   }, []);
@@ -156,10 +170,19 @@ export default function AdvertsPage() {
               </tr>
             </thead>
             <tbody className="dark:bg-white/[0.03]">
-              {filteredAdverts.length === 0 ? (
+              {error ? (
                 <tr>
                   <td
-                    colSpan={4}
+                    colSpan={5}
+                    className="py-6 text-center text-red-600 dark:text-red-400"
+                  >
+                    Error al cargar los anuncios: {error}
+                  </td>
+                </tr>
+              ) : filteredAdverts.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={5}
                     className="text-text/60 dark:text-dark-text/60 py-6 text-center"
                   >
                     No hay anuncios que coincidan con los filtros.
