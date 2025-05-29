@@ -36,17 +36,7 @@ export default function NewAdvertPage() {
     event.preventDefault();
 
     try {
-      const data = new FormData();
-      data.append("name", formState.name);
-      data.append("sale", formState.sale);
-      data.append("price", formState.price);
-
-      formState.tags.forEach((tag) => data.append("tags", tag));
-
-      const file = fileRef.current?.files?.[0];
-      if (file && file.size > 0) {
-        data.append("photo", file);
-      }
+      const data = new FormData(event.currentTarget);
 
       const { id } = await newAdvert(data);
       navigate(`/adverts/${id}`, { replace: true });
