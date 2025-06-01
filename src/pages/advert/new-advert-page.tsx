@@ -1,7 +1,7 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { newAdvert } from "./service";
+import { getTags, newAdvert } from "./service";
 import { Button } from "../../components/Button";
 import Page from "../../components/layout/page";
 import { AxiosError } from "axios";
@@ -9,6 +9,7 @@ import { AxiosError } from "axios";
 export default function NewAdvertPage() {
   const navigate = useNavigate();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [tags, setTags] = useState<string[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
   const [formState, setFormState] = useState({
     name: "",
@@ -16,6 +17,17 @@ export default function NewAdvertPage() {
     sale: "",
     tags: [] as string[],
   });
+
+  useEffect(() => {
+      getTags()
+        .then((data) => {
+          setTags(data);
+        })
+        .catch((error: unknown) => {
+         console.error("Error inesperado:", error);
+        });  
+      
+    }, []);
 
   const isFormValid =
     formState.name &&
@@ -138,7 +150,7 @@ export default function NewAdvertPage() {
               Tags
             </label>
             <div className="flex flex-wrap gap-3">
-              {["lifestyle", "mobile", "motor", "work"].map((tag) => (
+              {tags.map((tag) => (
                 <label key={tag} className="flex items-center text-sm">
                   <input
                     type="checkbox"

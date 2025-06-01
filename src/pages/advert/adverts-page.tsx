@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getAdverts, getTags } from "./service";
 import type { Advert, Tag } from "./types";
 import Page from "../../components/layout/page";
@@ -8,7 +8,6 @@ import { ZodError } from "zod";
 
 export default function AdvertsPage() {
   const [allAdverts, setAllAdverts] = useState<Advert[]>([]);
-  const [filteredAdverts, setFilteredAdverts] = useState<Advert[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,7 +22,6 @@ export default function AdvertsPage() {
     getAdverts()
       .then((data) => {
         setAllAdverts(data);
-        setFilteredAdverts(data);
       })
       .catch((error: unknown) => {
         if (error instanceof ZodError) {
@@ -40,8 +38,9 @@ export default function AdvertsPage() {
     getTags().then(setTags);
   }, []);
 
-  useEffect(() => {
-    const result = allAdverts.filter((ad) => {
+  // Filtrado dinámico con useMemo
+  const filteredAdverts = useMemo(() => {
+    return allAdverts.filter((ad) => {
       const matchesName = filters.name
         ? ad.name.toLowerCase().startsWith(filters.name.toLowerCase())
         : true;
@@ -53,17 +52,12 @@ export default function AdvertsPage() {
         ad.price >= filters.priceRange[0] && ad.price <= filters.priceRange[1];
 
       const matchesTags = filters.selectedTags.every((tag) =>
-        tagsInclude(ad.tags, tag),
+        ad.tags.some((t) => t.toString() === tag),
       );
 
       return matchesName && matchesSale && matchesPrice && matchesTags;
     });
-
-    setFilteredAdverts(result);
   }, [filters, allAdverts]);
-
-  const tagsInclude = (tags: Tag[], tag: string) =>
-    tags.some((t) => t.toString() === tag);
 
   const handleTagToggle = (tag: string) => {
     setFilters((prev) => ({
@@ -98,8 +92,7 @@ export default function AdvertsPage() {
             </select>
             <div className="flex flex-col gap-4 md:col-span-2">
               <label className="text-text dark:text-dark-text text-sm font-medium">
-                Rango de precio: {filters.priceRange[0]}€ -{" "}
-                {filters.priceRange[1]}€
+                Rango de precio: {filters.priceRange[0]}€ - {filters.priceRange[1]}€
               </label>
               <div className="flex flex-col gap-2">
                 <input
