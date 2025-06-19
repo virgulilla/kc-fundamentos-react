@@ -3,12 +3,14 @@ import { useEffect, useState } from "react";
 import { logout } from "../../pages/auth/service";
 import { useAuth } from "../../pages/auth/context";
 import Icon from "../icon";
+import { ConfirmModal } from "../../components/ConfirmModal";
 
 function Header() {
   const { isLogged, onLogout } = useAuth();
   const [darkMode, setDarkMode] = useState(() =>
     document.documentElement.classList.contains("dark"),
   );
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -23,10 +25,11 @@ function Header() {
     document.documentElement.classList.toggle("dark", darkMode);
   }, [darkMode]);
 
-  const handleLogoutClick = async () => {
+  const handleLogout = async () => {
     await logout();
     onLogout();
     document.documentElement.classList.remove("dark");
+    setIsConfirmOpen(false);
     navigate("/login", { replace: true });
   };
 
@@ -56,7 +59,7 @@ function Header() {
 
           {isLogged ? (
             <button
-              onClick={handleLogoutClick}
+              onClick={() => setIsConfirmOpen(true)}
               className={`${baseButtonClass} bg-danger hover:bg-danger/90 dark:bg-dark-danger dark:hover:bg-dark-danger/90 focus:ring-danger/50`}
             >
               Logout
@@ -85,6 +88,15 @@ function Header() {
           )}
         </nav>
       </div>
+      {isConfirmOpen && (
+        <ConfirmModal
+          title="Cerrar sesion"
+          message="¿Estás seguro de que deseas cerrar tu sesion de usuario?."
+          onConfirm={handleLogout}
+          onCancel={() => setIsConfirmOpen(false)}
+          buttonText="Cerrar sesión"
+        />
+      )}
     </header>
   );
 }

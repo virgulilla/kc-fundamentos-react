@@ -1,15 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
-import { getAdverts, getTags } from "./service";
-import type { Advert, Tag } from "./types";
+import { useMemo, useState } from "react";
 import Page from "../../components/layout/page";
 import { AdvertItem } from "../../components/AdvertItem";
 import { AdvertTableItem } from "../../components/AdvertTableItem";
-import { ZodError } from "zod";
+import { useTags } from "../../hooks/useTags";
+import { useAdverts } from "../..//hooks/useAdverts";
+import { TagsSelector } from "../../components/TagSelector";
 
 export default function AdvertsPage() {
-  const [allAdverts, setAllAdverts] = useState<Advert[]>([]);
-  const [tags, setTags] = useState<Tag[]>([]);
-  const [error, setError] = useState<string | null>(null);
 
   const [filters, setFilters] = useState({
     name: "",
@@ -18,25 +15,8 @@ export default function AdvertsPage() {
     selectedTags: [] as string[],
   });
 
-  useEffect(() => {
-    getAdverts()
-      .then((data) => {
-        setAllAdverts(data);
-      })
-      .catch((error: unknown) => {
-        if (error instanceof ZodError) {
-          const formattedErrors = error.errors.map(
-            (e) => `${e.path.join(".")} - ${e.message}`,
-          );
-          console.error("Errores de validación Zod:", formattedErrors);
-          setError(formattedErrors.join(", "));
-        } else {
-          console.error("Error inesperado:", error);
-        }
-      });
-
-    getTags().then(setTags);
-  }, []);
+  const tags = useTags();
+  const { adverts: allAdverts, error } = useAdverts();
 
   // Filtrado dinámico con useMemo
   const filteredAdverts = useMemo(() => {
@@ -92,7 +72,8 @@ export default function AdvertsPage() {
             </select>
             <div className="flex flex-col gap-4 md:col-span-2">
               <label className="text-text dark:text-dark-text text-sm font-medium">
-                Rango de precio: {filters.priceRange[0]}€ - {filters.priceRange[1]}€
+                Rango de precio: {filters.priceRange[0]}€ -{" "}
+                {filters.priceRange[1]}€
               </label>
               <div className="flex flex-col gap-2">
                 <input
@@ -131,23 +112,7 @@ export default function AdvertsPage() {
             <legend className="text-text dark:text-dark-text mb-2 text-sm font-medium">
               Tags
             </legend>
-            <div className="flex flex-wrap gap-4">
-              {tags.map((tag) => (
-                <label
-                  key={tag}
-                  className="text-text dark:text-dark-text flex items-center gap-2 text-sm"
-                >
-                  <input
-                    type="checkbox"
-                    value={tag}
-                    checked={filters.selectedTags.includes(tag)}
-                    onChange={() => handleTagToggle(tag)}
-                    className="accent-primary dark:accent-dark-primary"
-                  />
-                  {tag}
-                </label>
-              ))}
-            </div>
+            <TagsSelector tags={tags} selected={filters.selectedTags} onToggle={handleTagToggle} />
           </fieldset>
         </div>
 

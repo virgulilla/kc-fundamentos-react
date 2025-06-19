@@ -133,7 +133,7 @@ export default function AdvertPage() {
 
       {isConfirmOpen && (
         <ConfirmModal
-          title="Confirmar eliminación"
+          title="Confirmar eliminación" 
           message="¿Estás seguro de que deseas eliminar este anuncio? Esta acción no se puede deshacer."
           onConfirm={handleDelete}
           onCancel={() => setIsConfirmOpen(false)}

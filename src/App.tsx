@@ -97,17 +97,13 @@ function App() {
         <Route
           path="new"
           element={
-            <AuthRoute requireAuth={true}>
-              <NewAdvertPage />
-            </AuthRoute>
+            <NewAdvertPage />
           }
         />
         <Route
           path=":id"
           element={
-            <AuthRoute requireAuth={true}>
-              <AdvertPage />
-            </AuthRoute>
+            <AdvertPage />
           }
         />
       </Route>

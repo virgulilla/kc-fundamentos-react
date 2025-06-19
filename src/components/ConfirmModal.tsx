@@ -5,6 +5,7 @@ interface ConfirmModalProps {
   message: string;
   onConfirm: () => void;
   onCancel: () => void;
+  buttonText?: string;
 }
 
 export const ConfirmModal = ({
@@ -12,6 +13,7 @@ export const ConfirmModal = ({
   message,
   onConfirm,
   onCancel,
+  buttonText = 'Confirmar borrado'
 }: ConfirmModalProps) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
@@ -29,7 +31,7 @@ export const ConfirmModal = ({
             onClick={onConfirm}
             className="bg-danger hover:bg-danger/90 focus:ring-danger/50 rounded px-4 py-2 text-white focus:ring-2 focus:outline-none"
           >
-            Confirmar borrado
+            {buttonText}
           </button>
         </div>
       </div>
