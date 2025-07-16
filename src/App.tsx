@@ -1,5 +1,4 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-import { useAuth } from "./pages/auth/context";
 import RegisterPage from "./pages/register/register-page";
 import NewAdvertPage from "./pages/advert/new-advert-page";
 import AdvertsPage from "./pages/advert/adverts-page";
@@ -7,6 +6,7 @@ import NotFoundPage from "./pages/advert/not-found-page";
 import AdvertPage from "./pages/advert/advert-page";
 import Layout from "./components/layout/layout";
 import { Suspense, lazy, type ReactNode } from "react";
+import { useAppSelector } from "./store";
 const LoginPage = lazy(() => import("./pages/auth/login-page"));
 
 interface AuthRouteProps {
@@ -16,7 +16,7 @@ interface AuthRouteProps {
 }
 
 const AuthRoute = ({ children, requireAuth, redirectTo }: AuthRouteProps) => {
-  const { isLogged } = useAuth();
+  const isLogged = useAppSelector((state) => state.auth);
   const location = useLocation();
 
   const shouldAllow = requireAuth ? isLogged : !isLogged;
@@ -94,18 +94,8 @@ function App() {
             </AuthRoute>
           }
         />
-        <Route
-          path="new"
-          element={
-            <NewAdvertPage />
-          }
-        />
-        <Route
-          path=":id"
-          element={
-            <AdvertPage />
-          }
-        />
+        <Route path="new" element={<NewAdvertPage />} />
+        <Route path=":id" element={<AdvertPage />} />
       </Route>
 
       <Route path="/not-found" element={<Layout />}>

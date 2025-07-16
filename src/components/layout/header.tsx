@@ -1,12 +1,14 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { logout } from "../../pages/auth/service";
-import { useAuth } from "../../pages/auth/context";
 import Icon from "../icon";
 import { ConfirmModal } from "../../components/ConfirmModal";
+import { authLogout } from "../../store/actions";
+import { useAppDispatch, useAppSelector } from "../../store";
 
 function Header() {
-  const { isLogged, onLogout } = useAuth();
+  const isLogged = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
   const [darkMode, setDarkMode] = useState(() =>
     document.documentElement.classList.contains("dark"),
   );
@@ -27,7 +29,7 @@ function Header() {
 
   const handleLogout = async () => {
     await logout();
-    onLogout();
+    dispatch(authLogout());
     document.documentElement.classList.remove("dark");
     setIsConfirmOpen(false);
     navigate("/login", { replace: true });

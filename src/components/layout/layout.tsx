@@ -1,11 +1,11 @@
 import Header from "./header";
 import Footer from "./footer";
 import Sidebar from "./Sidebar";
-import { useAuth } from "../../pages/auth/context";
 import { Outlet } from "react-router-dom";
+import { useAppSelector } from "../../store";
 
 export default function Layout() {
-  const { isLogged } = useAuth();
+  const isLogged = useAppSelector((state) => state.auth);
 
   return (
     <div className="bg-background text-text dark:bg-dark-background font-inter flex min-h-screen flex-col">
