@@ -4,12 +4,11 @@ import { Button } from "../../components/Button";
 import { useLocation, useNavigate } from "react-router-dom";
 import Page from "../../components/layout/page";
 import { AxiosError } from "axios";
-import { authLogin } from "../../store/actions";
-import { useAppDispatch } from "../../store";
+import { useLoginAction } from "../../store/hooks";
 
 export default function LoginPage() {
   const location = useLocation();
-  const dispatch = useAppDispatch();
+  const loginAction = useLoginAction();
   const navigate = useNavigate();
   const [isFetching, setIsFetching] = useState(false);
   const [credentials, setCredentials] = useState({
@@ -33,7 +32,7 @@ export default function LoginPage() {
     try {
       setIsFetching(true);
       await login({ email, password, remember });
-      dispatch(authLogin());
+      loginAction();
       const to = location.state?.from ?? "/";
       navigate(to, { replace: true });
     } catch (error) {

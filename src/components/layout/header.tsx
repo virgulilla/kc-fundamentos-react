@@ -3,12 +3,11 @@ import { useEffect, useState } from "react";
 import { logout } from "../../pages/auth/service";
 import Icon from "../icon";
 import { ConfirmModal } from "../../components/ConfirmModal";
-import { authLogout } from "../../store/actions";
-import { useAppDispatch, useAppSelector } from "../../store";
+import { useAuth, useLogoutAction } from "../../store/hooks";
 
 function Header() {
-  const isLogged = useAppSelector((state) => state.auth);
-  const dispatch = useAppDispatch();
+  const isLogged = useAuth();
+  const logoutAction = useLogoutAction;
   const [darkMode, setDarkMode] = useState(() =>
     document.documentElement.classList.contains("dark"),
   );
@@ -29,7 +28,7 @@ function Header() {
 
   const handleLogout = async () => {
     await logout();
-    dispatch(authLogout());
+    logoutAction();
     document.documentElement.classList.remove("dark");
     setIsConfirmOpen(false);
     navigate("/login", { replace: true });

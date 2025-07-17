@@ -2,10 +2,10 @@ import Header from "./header";
 import Footer from "./footer";
 import Sidebar from "./Sidebar";
 import { Outlet } from "react-router-dom";
-import { useAppSelector } from "../../store";
+import { useAuth } from "../../store/hooks";
 
 export default function Layout() {
-  const isLogged = useAppSelector((state) => state.auth);
+  const isLogged = useAuth()
 
   return (
     <div className="bg-background text-text dark:bg-dark-background font-inter flex min-h-screen flex-col">

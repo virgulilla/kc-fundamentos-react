@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/Button";
 import Page from "../../components/layout/page";
-import { useAppSelector } from "../../store";
+import { useAuth } from "../../store/hooks";
 
 export default function NotFoundPage() {
   const navigate = useNavigate();
-  const isLogged = useAppSelector((state) => state.auth);
+  const isLogged = useAuth()
 
   const handleClick = () => {
     navigate(isLogged ? "/adverts" : "/login", { replace: true });
