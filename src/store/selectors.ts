@@ -6,7 +6,7 @@ export const getAdverts = (state: RootState) => state.adverts;
 
 export function getAdvert(id: string) {
   return function (state: RootState) {
-    return state.adverts.find((advert) => advert.id === id);
+    return state.adverts?.find((advert) => advert.id === id);
   };
 }
 

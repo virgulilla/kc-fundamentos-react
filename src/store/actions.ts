@@ -83,7 +83,7 @@ export const AdvertsCreatedFulFilled = (
 export function advertsLoaded(): AppThunk<Promise<void>> {
   return async function (dispatch, getState) {
     const state = getState();
-    if (state.adverts.length > 0) {
+    if (state.adverts) {
       return;
     }
     try {

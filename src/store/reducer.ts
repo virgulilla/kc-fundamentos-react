@@ -3,7 +3,7 @@ import type { Actions } from "./actions";
 
 export type State = {
   auth: boolean;
-  adverts: Advert[];
+  adverts: Advert[] | null;
   ui: {
     pending: boolean;
     error: Error | null;
@@ -12,7 +12,7 @@ export type State = {
 
 const defaultState: State = {
   auth: false,
-  adverts: [],
+  adverts: null,
   ui: {
     pending: false,
     error: null,

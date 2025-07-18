@@ -25,7 +25,7 @@ export default function AdvertsPage() {
 
   // Filtrado dinámico con useMemo
   const filteredAdverts = useMemo(() => {
-    return allAdverts.filter((ad) => {
+    return allAdverts?.filter((ad) => {
       const matchesName = filters.name
         ? ad.name.toLowerCase().startsWith(filters.name.toLowerCase())
         : true;
@@ -137,7 +137,7 @@ export default function AdvertsPage() {
               </tr>
             </thead>
             <tbody className="dark:bg-white/[0.03]">
-              {filteredAdverts.length === 0 ? (
+              {filteredAdverts?.length === 0 ? (
                 <tr>
                   <td
                     colSpan={5}
@@ -147,7 +147,7 @@ export default function AdvertsPage() {
                   </td>
                 </tr>
               ) : (
-                filteredAdverts.map((ad) => <AdvertItem key={ad.id} ad={ad} />)
+                filteredAdverts?.map((ad) => <AdvertItem key={ad.id} ad={ad} />)
               )}
             </tbody>
           </table>
