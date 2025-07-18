@@ -13,7 +13,6 @@ export const newAdvert = async (formData: FormData) => {
 
 export const getAdverts = async () => {
   const response = await client.get<unknown>("/api/v1/adverts");
-
   return AdvertsSchema.parse(response.data);
 };
 

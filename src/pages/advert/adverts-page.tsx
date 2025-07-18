@@ -1,13 +1,14 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Page from "../../components/layout/page";
 import { AdvertItem } from "../../components/AdvertItem";
 import { AdvertTableItem } from "../../components/AdvertTableItem";
 import { useTags } from "../../hooks/useTags";
-import { useAdverts } from "../..//hooks/useAdverts";
 import { TagsSelector } from "../../components/TagSelector";
+import { advertsLoaded } from "../../store/actions";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { getAdverts } from "../../store/selectors";
 
 export default function AdvertsPage() {
-
   const [filters, setFilters] = useState({
     name: "",
     sale: "all",
@@ -16,7 +17,11 @@ export default function AdvertsPage() {
   });
 
   const tags = useTags();
-  const { adverts: allAdverts, error } = useAdverts();
+  const dispatch = useAppDispatch();
+  const allAdverts = useAppSelector(getAdverts);
+  useEffect(() => {
+    dispatch(advertsLoaded());
+  }, [dispatch]);
 
   // Filtrado dinámico con useMemo
   const filteredAdverts = useMemo(() => {
@@ -112,7 +117,11 @@ export default function AdvertsPage() {
             <legend className="text-text dark:text-dark-text mb-2 text-sm font-medium">
               Tags
             </legend>
-            <TagsSelector tags={tags} selected={filters.selectedTags} onToggle={handleTagToggle} />
+            <TagsSelector
+              tags={tags}
+              selected={filters.selectedTags}
+              onToggle={handleTagToggle}
+            />
           </fieldset>
         </div>
 
@@ -128,16 +137,7 @@ export default function AdvertsPage() {
               </tr>
             </thead>
             <tbody className="dark:bg-white/[0.03]">
-              {error ? (
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="py-6 text-center text-red-600 dark:text-red-400"
-                  >
-                    Error al cargar los anuncios: {error}
-                  </td>
-                </tr>
-              ) : filteredAdverts.length === 0 ? (
+              {filteredAdverts.length === 0 ? (
                 <tr>
                   <td
                     colSpan={5}

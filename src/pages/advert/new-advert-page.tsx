@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { getTags, newAdvert } from "./service";
+import { getTags } from "./service";
 import { Button } from "../../components/Button";
 import Page from "../../components/layout/page";
 import { AxiosError } from "axios";
+import { advertsCreate } from "../../store/actions";
+import { useAppDispatch } from "../../store";
 
 export default function NewAdvertPage() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [tags, setTags] = useState<string[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -19,15 +22,14 @@ export default function NewAdvertPage() {
   });
 
   useEffect(() => {
-      getTags()
-        .then((data) => {
-          setTags(data);
-        })
-        .catch((error: unknown) => {
-         console.error("Error inesperado:", error);
-        });  
-      
-    }, []);
+    getTags()
+      .then((data) => {
+        setTags(data);
+      })
+      .catch((error: unknown) => {
+        console.error("Error inesperado:", error);
+      });
+  }, []);
 
   const isFormValid =
     formState.name &&
@@ -50,8 +52,8 @@ export default function NewAdvertPage() {
     try {
       const data = new FormData(event.currentTarget);
 
-      const { id } = await newAdvert(data);
-      navigate(`/adverts/${id}`, { replace: true });
+      const advertCreated = await dispatch(advertsCreate(data));
+      navigate(`/adverts/${advertCreated.id}`, { replace: true });
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.status === 401) {

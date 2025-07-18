@@ -1,22 +1,23 @@
 import { useState, type FormEvent, type ChangeEvent } from "react";
-import { login } from "./service";
 import { Button } from "../../components/Button";
 import { useLocation, useNavigate } from "react-router-dom";
 import Page from "../../components/layout/page";
-import { AxiosError } from "axios";
-import { useLoginAction } from "../../store/hooks";
+import { useLoginAction, useUiResetError } from "../../store/hooks";
+import { useAppSelector } from "../../store";
+import { getUi } from "../../store/selectors";
 
 export default function LoginPage() {
   const location = useLocation();
   const loginAction = useLoginAction();
+  const uiResetErrorAction = useUiResetError();
+  const { pending: isFetching, error } = useAppSelector(getUi);
   const navigate = useNavigate();
-  const [isFetching, setIsFetching] = useState(false);
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
     remember: false,
   });
-  const [error, setError] = useState<{ message: string } | null>(null);
+
   const { email, password, remember } = credentials;
   const disabled = !email || !password || isFetching;
 
@@ -30,20 +31,11 @@ export default function LoginPage() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      setIsFetching(true);
-      await login({ email, password, remember });
-      loginAction();
+      await loginAction(credentials);
       const to = location.state?.from ?? "/";
       navigate(to, { replace: true });
     } catch (error) {
-      if (error instanceof AxiosError) {
-        setError({
-          message: error.response?.data.message ?? error.message ?? "",
-        });
-      }
-      console.error(error);
-    } finally {
-      setIsFetching(false);
+      console.log(error);
     }
   };
 
@@ -62,7 +54,9 @@ export default function LoginPage() {
             <div
               className="rounded border border-red-200 bg-red-50 px-3 py-2 text-center text-sm text-red-600"
               role="alert"
-              onClick={() => setError(null)}
+              onClick={() => {
+                uiResetErrorAction();
+              }}
             >
               {error.message}
             </div>

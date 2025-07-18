@@ -1,40 +1,17 @@
 import { useParams, useNavigate, Navigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { getAdvert, deleteAdvert } from "./service";
+import { useState } from "react";
+import { deleteAdvert } from "./service";
 import { Button } from "../../components/Button";
 import { ConfirmModal } from "../../components/ConfirmModal";
-import { type Advert } from "./types";
 import Page from "../../components/layout/page";
-import { AxiosError } from "axios";
+import { useAppSelector } from "../../store";
+import { getAdvert } from "../../store/selectors";
 
 export default function AdvertPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [advert, setAdvert] = useState<Advert | null>(null);
-  const [loading, setLoading] = useState(true);
+  const advert = useAppSelector(getAdvert(id ?? ""));
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-
-  useEffect(() => {
-    if (!id) return;
-
-    const fetchAdvert = async () => {
-      try {
-        const data = await getAdvert(id);
-        setAdvert(data);
-      } catch (err) {
-        if (err instanceof AxiosError) {
-          if (err.status === 404) {
-            navigate("/not-found", { replace: true });
-          }
-        }
-        setAdvert(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAdvert();
-  }, [id, navigate]);
 
   const handleDelete = async () => {
     if (!id) return;
@@ -45,16 +22,6 @@ export default function AdvertPage() {
       console.error("Error eliminando anuncio:", err);
     }
   };
-
-  if (loading) {
-    return (
-      <Page title="">
-        <div className="text-text flex h-full items-center justify-center dark:text-white">
-          Cargando anuncio...
-        </div>
-      </Page>
-    );
-  }
 
   if (!advert) {
     return <Navigate to="/not-found" replace />;
@@ -133,7 +100,7 @@ export default function AdvertPage() {
 
       {isConfirmOpen && (
         <ConfirmModal
-          title="Confirmar eliminación" 
+          title="Confirmar eliminación"
           message="¿Estás seguro de que deseas eliminar este anuncio? Esta acción no se puede deshacer."
           onConfirm={handleDelete}
           onCancel={() => setIsConfirmOpen(false)}
