@@ -1,0 +1,81 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`LoginPage > should render 1`] = `
+<div>
+  <div>
+    <h1
+      class="mb-4 text-2xl font-semibold sm:text-3xl dark:text-white"
+    />
+    <div
+      class="bg-background flex min-h-screen items-center justify-center"
+    >
+      <form
+        class="w-full max-w-sm space-y-6 rounded bg-white p-8 shadow-md"
+      >
+        <h2
+          class="text-text text-center text-2xl font-semibold"
+        >
+          Iniciar sesión
+        </h2>
+        <div>
+          <label
+            class="text-text block text-sm font-medium"
+            for="email"
+          >
+            Correo electrónico
+          </label>
+          <input
+            class="border-border text-text focus:border-primary focus:ring-primary mt-1 w-full rounded border px-3 py-2 text-sm focus:ring-1 focus:outline-none"
+            id="email"
+            name="email"
+            required=""
+            type="email"
+            value=""
+          />
+        </div>
+        <div>
+          <label
+            class="text-text block text-sm font-medium"
+            for="password"
+          >
+            Contraseña
+          </label>
+          <input
+            class="border-border text-text focus:border-primary focus:ring-primary mt-1 w-full rounded border px-3 py-2 text-sm focus:ring-1 focus:outline-none"
+            id="password"
+            name="password"
+            required=""
+            type="password"
+            value=""
+          />
+        </div>
+        <div
+          class="flex items-center"
+        >
+          <input
+            class="border-border text-primary focus:ring-primary h-4 w-4 rounded"
+            id="remember"
+            name="remember"
+            type="checkbox"
+          />
+          <label
+            class="text-text ml-2 block text-sm"
+            for="remember"
+          >
+            Recordarme
+          </label>
+        </div>
+        <div>
+          <button
+            class="w-full rounded bg-primary px-4 py-2 text-white hover:bg-primary/90 focus:ring-2 focus:ring-primary/50 focus:outline-none"
+            disabled=""
+            type="submit"
+          >
+            Entrar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+`;

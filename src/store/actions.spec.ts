@@ -71,8 +71,10 @@ describe("authLogin", () => {
     const error = new Error("unauthorized");
     api.auth.login = vi.fn().mockRejectedValue(error);
 
-    // @ts-expect-error: no need getState
-    await thunk(dispatch, undefined, { api, router });
+    await expect(() =>
+      // @ts-expect-error: no need getState
+      thunk(dispatch, undefined, { api, router }),
+    ).rejects.toThrowError(error);
 
     expect(dispatch).toHaveBeenCalledTimes(2);
     expect(dispatch).toHaveBeenNthCalledWith(1, {
