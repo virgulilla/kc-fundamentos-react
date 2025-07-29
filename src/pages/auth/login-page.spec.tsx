@@ -1,4 +1,5 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import { userEvent } from "@testing-library/user-event";
 import LoginPage from "./login-page";
 import { Provider } from "react-redux";
 
@@ -27,4 +28,23 @@ describe("LoginPage", () => {
     const { container } = renderComponent();
     expect(container).toMatchSnapshot();
   });
+
+  test("Should dispatch login action", async () => {
+    renderComponent();
+    const emailInput = screen.getByLabelText("Correo electrónico");
+    const passwordInput = screen.getByLabelText("Contraseña");
+    const button = screen.getByRole("button");
+    expect(button).toHaveTextContent("Entrar");
+    expect(button).toBeDisabled();
+
+    // evento de dom
+    //fireEvent.change(emailInput, { target: { value: "oscar" } });
+    // eventos de usuario
+    await userEvent.type(emailInput, "oscar@example.com");
+    await userEvent.type(passwordInput, "1234");
+    expect(button).toBeEnabled();
+    await userEvent.click(button);
+  });
+
+  test("should render error", () => {});
 });
