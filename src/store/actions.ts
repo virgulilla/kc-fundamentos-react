@@ -74,7 +74,7 @@ export function authLogin(credentials: Credentials): AppThunk<Promise<void>> {
       if (error instanceof Error) {
         dispatch(authLoginRejected(error));
       }
-      throw error;
+      //throw error;
     }
   };
 }
