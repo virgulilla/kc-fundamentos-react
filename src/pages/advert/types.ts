@@ -8,7 +8,7 @@ export const AdvertSchema = z.object({
   sale: z.boolean(),
   price: z.number().min(0, "El precio debe ser positivo"),
   tags: z.array(z.enum(["lifestyle", "mobile", "motor", "work"])),
-  photo: z.string().optional(),
+  photo: z.union([z.string(), z.null()]).optional(),
 });
 
 export type Advert = z.infer<typeof AdvertSchema>;

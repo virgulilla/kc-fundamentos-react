@@ -1,16 +1,18 @@
-import { useParams, useNavigate, Navigate } from "react-router-dom";
-import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { deleteAdvert } from "./service";
 import { Button } from "../../components/Button";
 import { ConfirmModal } from "../../components/ConfirmModal";
 import Page from "../../components/layout/page";
-import { useAppSelector } from "../../store";
+import { useAppDispatch, useAppSelector } from "../../store";
 import { getAdvert } from "../../store/selectors";
+import { advertsDetail } from "../../store/actions";
 
 export default function AdvertPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const advert = useAppSelector(getAdvert(id ?? ""));
+  const advert = useAppSelector(getAdvert(id));
+  const dispatch = useAppDispatch();
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const handleDelete = async () => {
@@ -23,15 +25,18 @@ export default function AdvertPage() {
     }
   };
 
-  if (!advert) {
-    return <Navigate to="/not-found" replace />;
-  }
+  useEffect(() => {
+    if (!id) {
+      return;
+    }
+    dispatch(advertsDetail(id));
+  }, [id, dispatch]);
 
   return (
     <Page title="">
       <div className="mx-auto w-full max-w-4xl px-4 py-6 sm:px-8 sm:py-10">
         <div className="flex w-full flex-col items-center gap-6 rounded-lg bg-white p-4 shadow-lg sm:p-8 md:flex-row dark:bg-white/[0.03] dark:text-white">
-          {advert.photo && (
+          {advert?.photo && (
             <div className="flex w-full justify-center md:w-1/2">
               <img
                 src={advert.photo}
@@ -42,14 +47,14 @@ export default function AdvertPage() {
           )}
 
           <div className="mt-6 w-full space-y-4 md:mt-0 md:w-1/2">
-            <h1 className="text-3xl font-bold sm:text-4xl">{advert.name}</h1>
+            <h1 className="text-3xl font-bold sm:text-4xl">{advert?.name}</h1>
 
             <div>
               <span className="text-text/70 mb-1 block text-sm dark:text-white/70">
                 Precio
               </span>
               <span className="text-2xl font-bold sm:text-3xl">
-                {advert.price} €
+                {advert?.price} €
               </span>
             </div>
 
@@ -58,7 +63,7 @@ export default function AdvertPage() {
                 Tipo
               </span>
               <span className="bg-primary/10 text-primary inline-block rounded-full px-3 py-1 text-sm font-medium">
-                {advert.sale ? "Venta" : "Compra"}
+                {advert?.sale ? "Venta" : "Compra"}
               </span>
             </div>
 
@@ -67,7 +72,7 @@ export default function AdvertPage() {
                 Tags
               </span>
               <div className="flex flex-wrap gap-2">
-                {advert.tags?.length > 0
+                {advert?.tags && advert.tags.length > 0
                   ? advert.tags.map((tag) => (
                       <span
                         key={tag}

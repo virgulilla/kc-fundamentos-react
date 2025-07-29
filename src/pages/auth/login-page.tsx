@@ -1,17 +1,14 @@
 import { useState, type FormEvent, type ChangeEvent } from "react";
 import { Button } from "../../components/Button";
-import { useLocation, useNavigate } from "react-router-dom";
 import Page from "../../components/layout/page";
 import { useLoginAction, useUiResetError } from "../../store/hooks";
 import { useAppSelector } from "../../store";
 import { getUi } from "../../store/selectors";
 
 export default function LoginPage() {
-  const location = useLocation();
   const loginAction = useLoginAction();
   const uiResetErrorAction = useUiResetError();
   const { pending: isFetching, error } = useAppSelector(getUi);
-  const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
@@ -30,13 +27,7 @@ export default function LoginPage() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    try {
-      await loginAction(credentials);
-      const to = location.state?.from ?? "/";
-      navigate(to, { replace: true });
-    } catch (error) {
-      console.log(error);
-    }
+    await loginAction(credentials);
   };
 
   return (

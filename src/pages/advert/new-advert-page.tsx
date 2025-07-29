@@ -1,15 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
 import { getTags } from "./service";
 import { Button } from "../../components/Button";
 import Page from "../../components/layout/page";
-import { AxiosError } from "axios";
 import { advertsCreate } from "../../store/actions";
 import { useAppDispatch } from "../../store";
 
 export default function NewAdvertPage() {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [tags, setTags] = useState<string[]>([]);
@@ -48,20 +45,8 @@ export default function NewAdvertPage() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    try {
-      const data = new FormData(event.currentTarget);
-
-      const advertCreated = await dispatch(advertsCreate(data));
-      navigate(`/adverts/${advertCreated.id}`, { replace: true });
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        if (error.status === 401) {
-          navigate("/login", { replace: true });
-        }
-      }
-      console.error(error);
-    }
+    const data = new FormData(event.currentTarget);
+    dispatch(advertsCreate(data));
   };
 
   return (

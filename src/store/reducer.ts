@@ -1,9 +1,12 @@
 import type { Advert } from "../pages/advert/types";
-import type { Actions } from "./actions";
+import { type Actions, type ActionsRejected } from "./actions";
 
 export type State = {
   auth: boolean;
-  adverts: Advert[] | null;
+  adverts: {
+    loaded: boolean;
+    data: Advert[];
+  };
   ui: {
     pending: boolean;
     error: Error | null;
@@ -12,7 +15,10 @@ export type State = {
 
 const defaultState: State = {
   auth: false,
-  adverts: null,
+  adverts: {
+    loaded: false,
+    data: [],
+  },
   ui: {
     pending: false,
     error: null,
@@ -39,23 +45,29 @@ export function adverts(
 ): State["adverts"] {
   switch (action.type) {
     case "adverts/loaded/fulfilled":
-      return action.payload;
+      return { loaded: true, data: action.payload };
+    case "adverts/detail/fulfilled":
+      return { loaded: false, data: [action.payload] };
     case "adverts/created/fulfilled":
-      return [action.payload, ...(state ?? [])];
+      return { ...state, data: [action.payload, ...(state.data ?? [])] };
     default:
       return state;
   }
 }
 
+function isRejectedAction(action: Actions): action is ActionsRejected {
+  return action.type.endsWith("/rejected");
+}
+
 export function ui(state = defaultState.ui, action: Actions): State["ui"] {
   if (action.type === "auth/login/pending") {
-    return { ...state, pending: true, error: null };
+    return { pending: true, error: null };
   }
   if (action.type === "auth/login/fulfilled") {
-    return { ...state, pending: false, error: null };
+    return { pending: false, error: null };
   }
-  if (action.type === "auth/login/rejected") {
-    return { ...state, pending: false, error: action.payload };
+  if (isRejectedAction(action)) {
+    return { pending: false, error: action.payload };
   }
   if (action.type === "ui/reset-error") {
     return { ...state, error: null };

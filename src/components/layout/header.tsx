@@ -1,13 +1,12 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { logout } from "../../pages/auth/service";
 import Icon from "../icon";
 import { ConfirmModal } from "../../components/ConfirmModal";
 import { useAuth, useLogoutAction } from "../../store/hooks";
 
 function Header() {
   const isLogged = useAuth();
-  const logoutAction = useLogoutAction;
+  const logoutAction = useLogoutAction();
   const [darkMode, setDarkMode] = useState(() =>
     document.documentElement.classList.contains("dark"),
   );
@@ -27,11 +26,9 @@ function Header() {
   }, [darkMode]);
 
   const handleLogout = async () => {
-    await logout();
     logoutAction();
     document.documentElement.classList.remove("dark");
     setIsConfirmOpen(false);
-    navigate("/login", { replace: true });
   };
 
   const goToLogin = () => navigate("/login");
